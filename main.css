@@ -63,4 +63,6 @@ footer nav {
         -1px 1px 0 white,
         1px -1px 0 white, 
         1px 1px 0 white; 
+    display: inline-block;
+    transform: translate(-35%, -50%);
 }

@@ -53,10 +53,10 @@ L.control.scale({
 L.control.fullscreen().addTo(map);
 
 // diese Layer beim Laden anzeigen
-overlays.temperature.addTo(map);
+overlays.snowheight.addTo(map);
 
 
-// Farbe eritteln 
+// Farbe eritteln für draw Temperature
 let getColor = function(value, ramp){
     for (let rule of ramp){
         if(value >= rule.min && value < rule.max){
@@ -64,8 +64,8 @@ let getColor = function(value, ramp){
         }
     }
 }
- 
 
+ 
 // Stationen
 let drawStations = function (geojson) {
     // Wetterstationen mit Icons und Popups implementieren
@@ -110,6 +110,34 @@ let drawTemperature = function (geojson) {
     }).addTo(overlays.temperature);
 }
 
+//Schneehöhen 
+
+let drawSnowheight = function(geojson){
+    L.geoJson(geojson, {
+        filter: function(geoJsonPoint){
+            // return geoJsonPoint.properties.LT > -50 && geoJsonPoint.properties.LT < 50;
+            return isFinite (geoJsonPoint.properties.HS); 
+        },
+        pointToLayer: function (geoJsonPoint, latlng) {
+            let popup = `
+                <strong>${geoJsonPoint.properties.name}</strong><br>
+                (${geoJsonPoint.geometry.coordinates[2]} m ü.d.M.)
+            `;
+            let color = getColor(geoJsonPoint.properties.HS, COLORS.height); 
+
+            return L.marker(latlng, {
+                icon: L.divIcon({
+                    className: "aws-div-icon",
+                    html: `<span style="background-color:${color}">${geoJsonPoint.properties.HS.toFixed(1)}</span>`
+                })
+            }).bindPopup(popup);
+        }
+    }).addTo(overlays.snowheight);
+}
+
+
+
+
 // Wetterstationen
 async function loadData(url) {
     let response = await fetch(url);
@@ -117,6 +145,7 @@ async function loadData(url) {
 
     drawStations(geojson);
     drawTemperature(geojson);
+    drawSnowheight(geojson); 
 
 }
 loadData("https://static.avalanche.report/weather_stations/stations.geojson");
