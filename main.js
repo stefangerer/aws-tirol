@@ -114,8 +114,7 @@ let drawTemperature = function (geojson) {
 let drawSnowheight = function(geojson){
     L.geoJson(geojson, {
         filter: function(geoJsonPoint){
-            // return geoJsonPoint.properties.LT > -50 && geoJsonPoint.properties.LT < 50;
-            return isFinite (geoJsonPoint.properties.HS); 
+            return geoJsonPoint.properties.HS >= 0 && geoJsonPoint.properties.HS < 400000;
         },
         pointToLayer: function (geoJsonPoint, latlng) {
             let popup = `
@@ -138,8 +137,8 @@ let drawSnowheight = function(geojson){
 let drawWind = function(geojson) {
     L.geoJson(geojson, {
         filter: function(geoJsonPoint){
-            // return geoJsonPoint.properties.LT > -50 && geoJsonPoint.properties.LT < 50;
-            return isFinite (geoJsonPoint.properties.WG); 
+            return geoJsonPoint.properties.WG > 0 && geoJsonPoint.properties.WG < 1000 && geoJsonPoint.properties.WR > 0;
+           
         },
         pointToLayer: function (geoJsonPoint, latlng) {
             let popup = `
@@ -148,10 +147,12 @@ let drawWind = function(geojson) {
             `;
             let color = getColor(geoJsonPoint.properties.WG, COLORS.windspeed); 
 
+            let deg = geoJsonPoint.properties.WR
+
             return L.marker(latlng, {
                 icon: L.divIcon({
                     className: "aws-div-icon",
-                    html: `<span style="background-color:${color}">${geoJsonPoint.properties.WG.toFixed(1)}</span>`
+                    html: `<span style="background-color:${color}; transform: rotate(${deg}deg)"><i class="fa-solid fa-circle-arrow-up"></i>${geoJsonPoint.properties.WG.toFixed(1)}</span>`
                 })
             }).bindPopup(popup);
         }
