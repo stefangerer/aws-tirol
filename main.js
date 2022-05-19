@@ -59,13 +59,12 @@ overlays.temperature.addTo(map);
 // Farbe eritteln 
 let getColor = function(value, ramp){
     for (let rule of ramp){
-        console.log(rule)
         if(value >= rule.min && value < rule.max){
             return rule.color; 
         }
     }
 }
-console.log(getColor(-40, COLORS.temperature)); 
+ 
 
 // Stationen
 let drawStations = function (geojson) {
@@ -100,11 +99,11 @@ let drawTemperature = function (geojson) {
                 (${geoJsonPoint.geometry.coordinates[2]} m ü.d.M.)
             `;
             let color = getColor(geoJsonPoint.properties.LT, COLORS.temperature); 
-                        
+
             return L.marker(latlng, {
                 icon: L.divIcon({
                     className: "aws-div-icon",
-                    html: `<span>${geoJsonPoint.properties.LT}</span>`
+                    html: `<span style="background-color:${color}">${geoJsonPoint.properties.LT.toFixed(1)}</span>`
                 })
             }).bindPopup(popup);
         }
