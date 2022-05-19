@@ -52,8 +52,8 @@ L.control.scale({
 // Fullscreen control
 L.control.fullscreen().addTo(map);
 
-// Wetterstationslayer beim Laden anzeigen
-overlays.stations.addTo(map);
+// diese Layer beim Laden anzeigen
+overlays.temperature.addTo(map);
 
 // Stationen
 let drawStations = function(geojson) {
