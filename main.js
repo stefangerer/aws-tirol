@@ -77,6 +77,10 @@ let drawStations = function (geojson) {
 
 let drawTemperature = function (geojson) {
     L.geoJson(geojson, {
+        filter: function(geoJsonPoint){
+            // return geoJsonPoint.properties.LT > -50 && geoJsonPoint.properties.LT < 50;
+            return isFinite (geoJsonPoint.properties.LT); 
+        },
         pointToLayer: function (geoJsonPoint, latlng) {
             let popup = `
                 <strong>${geoJsonPoint.properties.name}</strong><br>
