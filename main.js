@@ -110,8 +110,7 @@ let drawTemperature = function (geojson) {
     }).addTo(overlays.temperature);
 }
 
-//Schneehöhen 
-
+// Schneehöhen 
 let drawSnowheight = function(geojson){
     L.geoJson(geojson, {
         filter: function(geoJsonPoint){
@@ -135,6 +134,30 @@ let drawSnowheight = function(geojson){
     }).addTo(overlays.snowheight);
 }
 
+// Wind 
+let drawWind = function(geojson) {
+    L.geoJson(geojson, {
+        filter: function(geoJsonPoint){
+            // return geoJsonPoint.properties.LT > -50 && geoJsonPoint.properties.LT < 50;
+            return isFinite (geoJsonPoint.properties.WG); 
+        },
+        pointToLayer: function (geoJsonPoint, latlng) {
+            let popup = `
+                <strong>${geoJsonPoint.properties.name}</strong><br>
+                (${geoJsonPoint.geometry.coordinates[2]} m ü.d.M.)
+            `;
+            let color = getColor(geoJsonPoint.properties.WG, COLORS.windspeed); 
+
+            return L.marker(latlng, {
+                icon: L.divIcon({
+                    className: "aws-div-icon",
+                    html: `<span style="background-color:${color}">${geoJsonPoint.properties.WG.toFixed(1)}</span>`
+                })
+            }).bindPopup(popup);
+        }
+    }).addTo(overlays.wind);
+}
+
 
 
 
@@ -146,6 +169,6 @@ async function loadData(url) {
     drawStations(geojson);
     drawTemperature(geojson);
     drawSnowheight(geojson); 
-
+    drawWind(geojson); 
 }
 loadData("https://static.avalanche.report/weather_stations/stations.geojson");
