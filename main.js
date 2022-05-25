@@ -36,7 +36,7 @@ let layerControl = L.control.layers({
 }, {
     "Wetterstationen": overlays.stations,
     "Temperatur": overlays.temperature,
-    "Niederschlag": overlays.precipitation,
+    "Relative Luftfeuchtigkeit": overlays.humidity,
     "Schneehöhe": overlays.snowheight,
     "Wind": overlays.wind
 }).addTo(map);
@@ -167,7 +167,7 @@ let drawWind = function(geojson) {
 let drawRH = function(geojson) {
     L.geoJson(geojson, {
         filter: function(geoJsonPoint){
-            return geoJsonPoint.properties.RH > 0 && geoJsonPoint.properties.RH < 1000 && geoJsonPoint.properties.RH > 0;
+            return geoJsonPoint.properties.RH > 0 && geoJsonPoint.properties.RH < 1000;
            
         },
         pointToLayer: function (geoJsonPoint, latlng) {
@@ -175,16 +175,16 @@ let drawRH = function(geojson) {
                 <strong>${geoJsonPoint.properties.name}</strong><br>
                 (${geoJsonPoint.geometry.coordinates[2]} m ü.d.M.)
             `;
-            let color = getColor(geoJsonPoint.properties.RH, COLORS.windspeed); 
+            let color = getColor(geoJsonPoint.properties.RH, COLORS.humidity); 
 
             return L.marker(latlng, {
                 icon: L.divIcon({
                     className: "aws-div-icon",
-                    html: `<span style="background-color:${color}">${geoJsonPoint.properties.HS.toFixed(1)}</span>`
+                    html: `<span style="background-color:${color}">${geoJsonPoint.properties.RH.toFixed(1)}</span>`
                 })
             }).bindPopup(popup);
         }
-    }).addTo(overlays.snowheight);
+    }).addTo(overlays.humidity);
 }
 
 
@@ -198,6 +198,7 @@ async function loadData(url) {
     drawStations(geojson);
     drawTemperature(geojson);
     drawSnowheight(geojson); 
-    drawWind(geojson); 
+    drawWind(geojson);
+    drawRH(geojson);  
 }
 loadData("https://static.avalanche.report/weather_stations/stations.geojson");
