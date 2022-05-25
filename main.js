@@ -15,7 +15,7 @@ let startLayer = L.tileLayer("https://static.avalanche.report/tms/{z}/{x}/{y}.we
 let overlays = {
     stations: L.featureGroup(),
     temperature: L.featureGroup(),
-    precipitation: L.featureGroup(),
+    humidity: L.featureGroup(),
     snowheight: L.featureGroup(),
     wind: L.featureGroup(),
 };
@@ -146,8 +146,6 @@ let drawWind = function(geojson) {
                 (${geoJsonPoint.geometry.coordinates[2]} m ü.d.M.)
             `;
             let color = getColor(geoJsonPoint.properties.WG, COLORS.windspeed); 
-
-            geoJsonPoint.properties.hu
 
 
 
