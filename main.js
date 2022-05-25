@@ -147,6 +147,10 @@ let drawWind = function(geojson) {
             `;
             let color = getColor(geoJsonPoint.properties.WG, COLORS.windspeed); 
 
+            geoJsonPoint.properties.hu
+
+
+
             let deg = geoJsonPoint.properties.WR
 
             return L.marker(latlng, {
@@ -157,6 +161,30 @@ let drawWind = function(geojson) {
             }).bindPopup(popup);
         }
     }).addTo(overlays.wind);
+}
+
+// Wind 
+let drawRH = function(geojson) {
+    L.geoJson(geojson, {
+        filter: function(geoJsonPoint){
+            return geoJsonPoint.properties.RH > 0 && geoJsonPoint.properties.RH < 1000 && geoJsonPoint.properties.RH > 0;
+           
+        },
+        pointToLayer: function (geoJsonPoint, latlng) {
+            let popup = `
+                <strong>${geoJsonPoint.properties.name}</strong><br>
+                (${geoJsonPoint.geometry.coordinates[2]} m ü.d.M.)
+            `;
+            let color = getColor(geoJsonPoint.properties.RH, COLORS.windspeed); 
+
+            return L.marker(latlng, {
+                icon: L.divIcon({
+                    className: "aws-div-icon",
+                    html: `<span style="background-color:${color}">${geoJsonPoint.properties.HS.toFixed(1)}</span>`
+                })
+            }).bindPopup(popup);
+        }
+    }).addTo(overlays.snowheight);
 }
 
 
