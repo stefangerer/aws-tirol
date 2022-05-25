@@ -53,7 +53,7 @@ L.control.scale({
 L.control.fullscreen().addTo(map);
 
 // diese Layer beim Laden anzeigen
-overlays.snowheight.addTo(map);
+overlays.stations.addTo(map);
 
 
 // Farbe eritteln für draw Temperature
@@ -64,7 +64,6 @@ let getColor = function(value, ramp){
         }
     }
 }
-
  
 // Stationen
 let drawStations = function (geojson) {
@@ -73,7 +72,18 @@ let drawStations = function (geojson) {
         pointToLayer: function (geoJsonPoint, latlng) {
             let popup = `
                 <strong>${geoJsonPoint.properties.name}</strong><br>
-                (${geoJsonPoint.geometry.coordinates[2]} m ü.d.M.)
+                (${geoJsonPoint.geometry.coordinates[2]} m ü.d.M.)<br>
+                Temperatur: ${geoJsonPoint.properties.LT} °C
+                <br>
+                Schneehöhe: ${geoJsonPoint.properties.HS} cm
+                <br>
+                Windgeschwindigkeit: ${(geoJsonPoint.properties.WG * 3600) / 1000} km/h 
+                <br>
+                Windrichtung: ${geoJsonPoint.properties.WR}°
+                <br>
+                Relative Luftfeuchtigkeit: ${geoJsonPoint.properties.RH} %
+                <br> 
+                ${geojson.plot()}
             `;
             return L.marker(latlng, {
                 icon: L.icon({
